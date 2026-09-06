@@ -14,7 +14,8 @@
 - 暂存与检查：运行 `git add AGENTS.md README.md 'git和github记录.md' install.sh lib uninstall.sh update.sh`；`git diff --cached --check` 通过（仅提示 README 文件末尾存在空白行），暂存区统计为 14 个文件、2344 行新增内容。
 - 创建提交：运行 `git commit -m "chore: initialize AI CLI installer"` 成功，提交为 `9ea5dc5`（root commit）。
 - 日志同步提交：将本次暂存、检查和提交结果写入本文件后，运行 `git add 'git和github记录.md'` 及 `git commit -m "docs: record git workflow"`，把学习记录单独保存到历史中。
-- 待完成：`git push -u origin main` 尚未执行；完成后在此处补充推送结果。
+- 首次推送：运行 `git push -u origin main` 成功，输出显示 `main -> main`，并建立了本地 `main` 对 `origin/main` 的跟踪关系。
+- 日志同步：本条推送结果会随下一次 `git add 'git和github记录.md'`、`git commit -m "docs: record push result"` 和 `git push` 一并同步到 GitHub。
 
 ### 这些命令的作用
 
