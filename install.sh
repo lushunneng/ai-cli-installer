@@ -167,7 +167,7 @@ install_plugin() {
         return 1
     fi
 
-    if [[ -z "${INSTALL_RESULTS[$id]+x}" ]]; then
+    if ! get_result_status "$id" >/dev/null 2>&1; then
         record_result "$id" "failed" "$name 安装函数返回失败"
     fi
     return 1
@@ -233,7 +233,7 @@ do_full_uninstall() {
             local cmd
             cmd=$(get_plugin_field "${PLUGIN_LIST[$i]}" 1)
             uninstall_tool "$cmd" || true
-            ((i--))
+            i=$((i - 1))
         done
         success "全部卸载完成"
     else

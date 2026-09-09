@@ -233,6 +233,21 @@ apt_install() {
     return 1
 }
 
+apt_upgrade() {
+    local retries=3
+    for ((i=1; i<=retries; i++)); do
+        if run_cmd sudo apt-get upgrade -y; then
+            return 0
+        fi
+        if [[ $i -lt $retries ]]; then
+            warn "apt 升级失败，等待 15 秒后重试 ($i/$retries)..."
+            sleep 15
+        fi
+    done
+    error "apt-get upgrade 失败"
+    return 1
+}
+
 install_system_deps() {
     step "安装基础依赖"
     apt_install curl wget git build-essential ca-certificates gnupg lsb-release

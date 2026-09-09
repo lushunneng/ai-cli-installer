@@ -63,6 +63,13 @@ update_nvm() {
 
 install_node() {
     step "安装 Node.js $NODE_VERSION (LTS)"
+    if [[ "$DRY_RUN" == "true" ]]; then
+        run_cmd nvm install "$NODE_VERSION"
+        run_cmd nvm use "$NODE_VERSION"
+        run_cmd nvm alias default "$NODE_VERSION"
+        success "[DRY-RUN] Node.js $NODE_VERSION 安装命令已计划"
+        return 0
+    fi
 
     load_nvm
 
@@ -83,11 +90,6 @@ install_node() {
     run_cmd nvm install "$NODE_VERSION"
     run_cmd nvm use "$NODE_VERSION"
     run_cmd nvm alias default "$NODE_VERSION"
-
-    if [[ "$DRY_RUN" == "true" ]]; then
-        success "[DRY-RUN] Node.js $NODE_VERSION 安装命令已计划"
-        return 0
-    fi
 
     success "Node.js $(node --version) 已安装"
     info "npm $(npm --version)"

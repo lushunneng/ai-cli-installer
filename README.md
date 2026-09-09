@@ -10,6 +10,8 @@ AI CLI Installer 是一个插件式 AI CLI 工具安装器。入口脚本会自�
 - Grok CLI (xAI)
 - Herdr
 - OpenCode CLI
+- Kimi Code CLI (Moonshot AI)
+- Qoder CLI
 
 ## 环境要求
 
@@ -142,6 +144,24 @@ source ~/.zshrc
 ./update.sh --all --force --yes
 ```
 
+刷新 APT 仓库索引：
+
+```bash
+./update.sh --apt --yes
+```
+
+更新已安装的系统软件包：
+
+```bash
+./update.sh --system --yes
+```
+
+安装 Ubuntu 最新通用内核元包（完成后按提示重启）：
+
+```bash
+./update.sh --kernel --yes
+```
+
 只预览更新动作，不实际执行：
 
 ```bash
@@ -158,6 +178,8 @@ source ~/.zshrc
 - OpenCode：优先执行 `opencode upgrade latest`
 - Grok：复用现有安装器更新逻辑
 - NVM：通过 GitHub releases 检查版本，并用官方安装脚本更新
+- Kimi Code CLI：优先使用 `uv tool upgrade kimi-cli --no-cache`
+- Qoder CLI：使用 npm 更新 `@qoder-ai/qodercli`
 
 ## 新增工具
 

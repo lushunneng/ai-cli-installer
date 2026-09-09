@@ -81,7 +81,7 @@ EOF
                     cmd=$(get_plugin_field "${PLUGIN_LIST[$i]}" 6)
                     local func="$cmd"
                     declare -f "$func" &>/dev/null && "$func"
-                    ((i--))
+                    i=$((i - 1))
                 done
                 echo ""
                 success "全部卸载完成"

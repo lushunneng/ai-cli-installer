@@ -24,3 +24,22 @@
 - `git commit` 在本地创建一个可追踪的历史节点。
 - `git remote add origin <地址>` 给远端地址起一个常用别名 `origin`。
 - `git push -u origin main` 首次推送 `main`；`-u` 建立跟踪关系，以后通常只需运行 `git push`。
+
+## 2026-09-09：新增系统更新与 Kimi/Qoder CLI 支持
+
+- 目的：修复安装器已确认问题，并增加 APT 仓库、系统软件包、Ubuntu 通用内核更新，以及 Kimi Code CLI、Qoder CLI 插件。
+- 检查仓库：运行 `git status --short --branch`，结果为 `## main...origin/main`。
+- 差异检查：运行 `git diff --check`，通过，无空白错误。
+- 差异审阅：运行 `git diff --stat` 和针对修改文件的 `git diff`，确认变更集中在安装、更新、插件和文档范围。
+- 工作区结果：修改了 `README.md`、`install.sh`、`lib/common.sh`、`lib/node.sh`、`uninstall.sh`、`update.sh`，新增 `lib/kimi.sh` 和 `lib/qoder.sh`。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、帮助命令、插件加载检查、安装器完整 dry-run 和 APT dry-run，均通过。
+- 后续说明：本次未执行 commit、push 或实际 apt/CLI 安装；系统更新需用户显式运行 `update.sh --apt`、`--system` 或 `--kernel`。
+- 最终检查：补充 README 中 Kimi/Qoder 更新方式后，再次运行 `git diff --check`，仍然通过。
+
+## 2026-09-09：准备推送功能升级
+
+- 目的：将 APT/系统/内核更新及 Kimi/Qoder CLI 功能升级推送到远端仓库。
+- 检查仓库：运行 `git status --short --branch`。
+- 检查结果：当前分支为 `main`，跟踪 `origin/main`；工作区有 6 个已修改文件和 2 个新增插件文件，另有本操作记录文件修改。
+- 提交尝试：运行 `git commit -m "feat: add system and AI CLI updates"` 失败，原因是当前环境未配置 Git 用户身份（empty ident name）。
+- 身份配置：运行 `git config --local user.name "lushunneng"` 和 `git config --local user.email "lushunneng@126.com"` 成功，仅写入本仓库配置。

@@ -11,12 +11,18 @@ load_plugins "${SCRIPT_DIR}/lib"
 DO_ALL=false
 CHECK_ONLY=false
 FORCE_UPDATE=false
+UPDATE_APT_INDEX=false
+UPDATE_SYSTEM=false
+UPDATE_KERNEL=false
 
 show_help() {
     cat << EOF
 用法: $0 [选项]
 
 选项:
+  --apt           刷新 APT 仓库索引
+  --system        刷新 APT 索引并升级已安装的软件包
+  --kernel        安装 Ubuntu 最新通用内核元包（同时刷新 APT 索引）
   无参数          交互式检查并选择更新
   --all, -a       更新所有检测为可更新的工具
   --force, -f     配合 --all 时，强制更新所有已安装工具
@@ -34,6 +40,9 @@ parse_args() {
             --force|-f)    FORCE_UPDATE=true; shift ;;
             --check-only)  CHECK_ONLY=true; shift ;;
             --yes|-y)      FORCE_YES=true; shift ;;
+            --apt)         UPDATE_APT_INDEX=true; shift ;;
+            --system)      UPDATE_SYSTEM=true; shift ;;
+            --kernel)      UPDATE_KERNEL=true; shift ;;
             --dry-run)     DRY_RUN=true; shift ;;
             --help|-h)     show_help; exit 0 ;;
             *) error "未知参数: $1"; exit 1 ;;
@@ -96,6 +105,13 @@ github_latest_release() {
         | sed 's/^v//'
 }
 
+pypi_latest_version() {
+    local package="$1"
+    curl -fsSL --connect-timeout 5 --max-time 10 "https://pypi.org/pypi/${package}/json" 2>/dev/null \
+        | sed -nE 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' \
+        | head -n1
+}
+
 npm_latest_version() {
     local package="$1"
     load_nvm
@@ -136,6 +152,8 @@ latest_version_for() {
         grok)        npm_latest_version "@xai-official/grok" ;;
         herdr)       github_latest_release "herdrdev" "herdr" ;;
         opencode)    npm_latest_version "opencode-ai" ;;
+        kimi)        pypi_latest_version "kimi-cli" ;;
+        qoder)       npm_latest_version "@qoder-ai/qodercli" ;;
         *)           return 1 ;;
     esac
 }
@@ -209,6 +227,19 @@ update_plugin() {
             ;;
         opencode)
             if command_exists opencode && run_cmd opencode upgrade latest; then
+                FORCE_YES="$old_force"
+                return 0
+            fi
+            ;;
+        kimi)
+            if command_exists uv && run_cmd uv tool upgrade kimi-cli --no-cache; then
+                FORCE_YES="$old_force"
+                return 0
+            fi
+            ;;
+        qoder)
+            load_nvm
+            if command_exists npm && run_cmd npm install -g @qoder-ai/qodercli@latest; then
                 FORCE_YES="$old_force"
                 return 0
             fi
@@ -331,6 +362,8 @@ interactive_update() {
 
     echo -e "  ${BOLD}A) 更新所有可更新工具${NC}"
     echo -e "  ${BOLD}F) 强制更新所有已安装工具${NC}"
+    echo -e "  ${BOLD}S) 更新系统软件包${NC}"
+    echo -e "  ${BOLD}K) 更新 Ubuntu 通用内核${NC}"
     echo -e "  ${BOLD}Q) 退出${NC}"
     echo ""
     echo -n -e "${BOLD}请选择要更新的工具编号（逗号分隔）: ${NC}"
@@ -338,6 +371,8 @@ interactive_update() {
 
     case "$choice" in
         [Aa]) run_updates_for_indexes "${UPDATABLE_INDEXES[@]}" ;;
+        [Ss]) update_system_packages ;;
+        [Kk]) update_kernel ;;
         [Ff]) run_updates_for_indexes "${INSTALLED_INDEXES[@]}" ;;
         [Qq]|"") info "已退出" ;;
         *)
@@ -349,6 +384,25 @@ interactive_update() {
     esac
 }
 
+update_apt_index() {
+    step "刷新 APT 仓库索引"
+    apt_update
+}
+
+update_system_packages() {
+    step "更新系统软件包"
+    apt_update && apt_upgrade
+}
+
+update_kernel() {
+    step "更新 Ubuntu 通用内核"
+    if [[ "$(detect_os)" != "ubuntu" ]]; then
+        error "内核元包更新仅支持 Ubuntu"
+        return 1
+    fi
+    apt_update && apt_install --install-recommends linux-generic
+}
+
 parse_args "$@"
 init_log
 
@@ -356,12 +410,28 @@ echo -e "${BOLD}${CYAN}AI CLI 工具更新检查${NC}"
 [[ "$DRY_RUN" == "true" ]] && echo -e "${YELLOW}模式: DRY-RUN${NC}"
 echo -e "已注册工具: ${#PLUGIN_LIST[@]}"
 
-scan_versions
-print_scan_table
-
 if [[ "$CHECK_ONLY" == "true" ]]; then
+    scan_versions
+    print_scan_table
     exit 0
 fi
+
+if [[ "$UPDATE_APT_INDEX" == "true" ]]; then
+    update_apt_index
+fi
+if [[ "$UPDATE_SYSTEM" == "true" ]]; then
+    update_system_packages
+fi
+if [[ "$UPDATE_KERNEL" == "true" ]]; then
+    update_kernel
+fi
+if [[ "$UPDATE_APT_INDEX" == "true" || "$UPDATE_SYSTEM" == "true" || "$UPDATE_KERNEL" == "true" ]] && [[ "$DO_ALL" != "true" ]]; then
+    success "系统更新完成"
+    exit 0
+fi
+
+scan_versions
+print_scan_table
 
 if [[ "$DO_ALL" == "true" ]]; then
     if [[ "$FORCE_UPDATE" == "true" ]]; then
