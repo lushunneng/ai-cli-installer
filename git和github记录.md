@@ -45,3 +45,26 @@
 - 身份配置：运行 `git config --local user.name "lushunneng"` 和 `git config --local user.email "lushunneng@126.com"` 成功，仅写入本仓库配置。
 - 创建提交：运行 `git commit -m "feat: add system and AI CLI updates"` 成功，提交哈希为 `df26584`。
 - 首次推送：运行 `git push origin main` 成功，远端 `main` 从 `ac2ae49` 更新到 `5c52677`。
+- 文档记录推送：运行 `git push origin main` 成功，远端 `main` 从 `5c52677` 更新到 `eb21def`。
+
+## 2026-09-11：集成常用系统工具插件
+
+- 目的：为安装器增加常用 Ubuntu 开发与运维工具的集中安装和更新能力。
+- 检查仓库：运行 `git status --short --branch`，结果为 `## main...origin/main`；随后工作区包含 `README.md`、`update.sh` 和新增 `lib/system-tools.sh` 修改。
+- 差异检查：运行 `git diff --check`，通过，无空白错误。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、插件加载检查和 `./install.sh --dry-run --all --yes`，均通过；插件总数为 9 个。
+- 后续说明：本次未执行 commit 或 push；新增工具插件默认保留系统包，不自动卸载。
+
+## 2026-09-11：新增 mosh 工具
+
+- 目的：将 mosh 加入常用 Ubuntu 系统工具集合，纳入安装、更新和卸载提示。
+- 差异检查：运行 `git diff --check`，通过，无空白错误。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、插件加载检查、安装器 dry-run 和更新器 dry-run，均通过；安装和更新命令均包含 `mosh`。
+- 后续说明：本次未执行 commit 或 push；mosh 将随常用系统工具插件通过 APT 安装。
+
+## 2026-09-11：准备推送 mosh 集成
+
+- 目的：提交并推送常用系统工具集成及 mosh 工具改动。
+- 检查仓库：运行 `git status --short --branch`。
+- 检查结果：当前分支为 `main`，跟踪 `origin/main`；工作区包含 `README.md`、`update.sh`、新增 `lib/system-tools.sh` 以及本记录文件修改。
+- 暂存检查：运行 `git add README.md update.sh lib/system-tools.sh git和github记录.md` 及 `git diff --cached --check`，检查通过；暂存差异统计为 4 个文件、71 行新增。

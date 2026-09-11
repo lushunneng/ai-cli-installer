@@ -244,6 +244,13 @@ update_plugin() {
                 return 0
             fi
             ;;
+        system-tools)
+            if apt_update && run_cmd sudo apt-get install -y --only-upgrade \
+                ripgrep fd-find bat jq tree htop tmux mosh zip unzip build-essential; then
+                FORCE_YES="$old_force"
+                return 0
+            fi
+            ;;
     esac
 
     if declare -f "$install_func" >/dev/null 2>&1; then

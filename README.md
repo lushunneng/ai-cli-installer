@@ -12,6 +12,7 @@ AI CLI Installer 是一个插件式 AI CLI 工具安装器。入口脚本会自�
 - OpenCode CLI
 - Kimi Code CLI (Moonshot AI)
 - Qoder CLI
+- 常用系统工具（ripgrep、fd、bat、jq、tree、htop、tmux、mosh 等）
 
 ## 环境要求
 
@@ -180,6 +181,7 @@ source ~/.zshrc
 - NVM：通过 GitHub releases 检查版本，并用官方安装脚本更新
 - Kimi Code CLI：优先使用 `uv tool upgrade kimi-cli --no-cache`
 - Qoder CLI：使用 npm 更新 `@qoder-ai/qodercli`
+- 常用系统工具：通过 APT `--only-upgrade` 更新已安装的软件包
 
 ## 新增工具
 
