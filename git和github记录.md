@@ -68,3 +68,9 @@
 - 检查仓库：运行 `git status --short --branch`。
 - 检查结果：当前分支为 `main`，跟踪 `origin/main`；工作区包含 `README.md`、`update.sh`、新增 `lib/system-tools.sh` 以及本记录文件修改。
 - 暂存检查：运行 `git add README.md update.sh lib/system-tools.sh git和github记录.md` 及 `git diff --cached --check`，检查通过；暂存差异统计为 4 个文件、71 行新增。
+
+## 2026-09-11：提交 mosh 集成改动
+
+- 目的：提交已验证的常用系统工具及 mosh 集成。
+- 执行命令：`git commit -m "feat: add mosh system tool"`。
+- 执行结果：提交成功，提交哈希为 `b0871e4`，包含 4 个文件、72 行新增。
