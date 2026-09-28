@@ -110,3 +110,9 @@
 - 目的：保存已验证的远程桌面模块和常用工具交互选择功能。
 - 执行命令：`git add README.md install.sh lib/common.sh lib/system-tools.sh lib/remote-desktop.sh git和github记录.md`、`git diff --cached --check`、`git diff --cached --stat`、`git commit -m "feat: add remote desktop and tool selection"`。
 - 执行结果：暂存检查通过；提交成功，提交哈希为 `adbb2bf`，包含 6 个文件、468 行新增/修改。
+
+## 2026-09-27：推送远程桌面和工具选择改动
+
+- 目的：将远程桌面模块及常用系统工具单选/多选功能同步到远端仓库。
+- 执行命令：`git push origin main`。
+- 执行结果：推送成功，远端 `main` 从 `54ff0a8` 更新到 `a2d2cd6`。
