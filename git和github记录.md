@@ -104,3 +104,9 @@
 - 目的：提交并推送 XFCE/XRDP/Tailscale 远程桌面模块及常用系统工具单选/多选功能。
 - 检查仓库：运行 `git status --short --branch`，结果为 `## main...origin/main`；工作区包含 `README.md`、`install.sh`、`lib/common.sh`、`lib/system-tools.sh`、新增 `lib/remote-desktop.sh` 以及本记录文件修改。
 - 后续操作：将执行暂存、差异检查、提交和推送。
+
+## 2026-09-27：提交远程桌面和工具选择改动
+
+- 目的：保存已验证的远程桌面模块和常用工具交互选择功能。
+- 执行命令：`git add README.md install.sh lib/common.sh lib/system-tools.sh lib/remote-desktop.sh git和github记录.md`、`git diff --cached --check`、`git diff --cached --stat`、`git commit -m "feat: add remote desktop and tool selection"`。
+- 执行结果：暂存检查通过；提交成功，提交哈希为 `adbb2bf`，包含 6 个文件、468 行新增/修改。
