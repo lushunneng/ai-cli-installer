@@ -171,13 +171,22 @@ detect_arch() {
 }
 
 check_ubuntu() {
-    local os
+    local os ver
     os=$(detect_os)
-    if [[ "$os" != "ubuntu" ]]; then
-        warn "当前系统为 ${os}，脚本仅在 Ubuntu 22.04/24.04 上测试过"
-        if ! confirm "  是否继续？" "N"; then
-            exit 0
-        fi
+    ver=$(detect_version)
+    if [[ "$os" == "ubuntu" && "$ver" == "22.04" ]] ||
+       [[ "$os" == "ubuntu" && "$ver" == "24.04" ]] ||
+       [[ "$os" == "ubuntu" && "$ver" == "26.04" ]] ||
+       [[ "$os" == "debian" && "$ver" == "12" ]]; then
+        return 0
+    fi
+    warn "当前系统为 ${os} ${ver}，本项目主要支持 Debian 12 / Ubuntu 22.04、24.04、26.04"
+    if [[ "${REMOTE_DESKTOP_ACTION:-}" != "" ]]; then
+        error "轻量级远程桌面不支持当前系统"
+        return 1
+    fi
+    if ! confirm "  是否继续？" "N"; then
+        exit 0
     fi
 }
 

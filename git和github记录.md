@@ -80,3 +80,27 @@
 - 目的：将常用系统工具及 mosh 集成提交推送到远端仓库。
 - 执行命令：`git push origin main`。
 - 执行结果：推送成功，远端 `main` 从 `eb21def` 更新到 `fbe10e7`。
+
+## 2026-09-27：集成 XFCE/XRDP/Tailscale 轻量级远程桌面
+
+- 目的：将轻量级图形桌面、XRDP、Xorgxrdp、Tailscale、状态检查、修复、低资源优化和卸载功能集成到现有插件式安装器。
+- 项目分析：入口为 `install.sh`；动态菜单和插件注册位于 `lib/common.sh`/`install.sh`；系统检测、APT、日志、sudo/确认、结果追踪均复用现有实现；卸载入口为 `uninstall.sh`；更新入口为 `update.sh`。
+- 修改文件：新增 `lib/remote-desktop.sh`；修改 `install.sh`、`lib/common.sh`、`README.md`。
+- CLI：新增 `--remote-desktop install|status|repair|optimize|info|uninstall|uninstall-tailscale` 和 `--tailscale-auth-key`；Auth Key 不写入日志、配置或错误输出，并在认证成功/失败后清理变量。
+- 支持系统：Debian 12、Ubuntu 22.04、24.04、26.04；公共 `check_ubuntu` 扩展为这些必要判断。
+- 安全行为：不自动开放公网 3389、不关闭 UFW、不修改 SSH、不删除用户或 Home；仅在 UFW 已启用且 `tailscale0` 存在时添加接口级 3389 规则，并对公网 3389 规则进行确认提示。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、安装器帮助、远程桌面安装 dry-run、状态 dry-run、`git diff --check`；均通过。环境未安装 `shellcheck`，未执行实际 apt/systemctl/UFW/Tailscale 部署。
+- 后续说明：本轮未执行 commit 或 push。
+
+## 2026-09-27：常用系统工具支持单选和多选
+
+- 目的：将常用系统工具从无选择的一次性安装改为交互式单个/多个选择。
+- 修改：`lib/system-tools.sh` 新增编号菜单，支持输入单个编号、逗号分隔多个编号、`A` 全部安装和 `Q` 取消；`--all`、`--yes` 或非交互运行时保持自动安装全部。
+- 文档：`README.md` 增加选择示例。
+- 后续说明：本次未执行 commit 或 push。
+
+## 2026-09-27：准备推送远程桌面和工具选择改动
+
+- 目的：提交并推送 XFCE/XRDP/Tailscale 远程桌面模块及常用系统工具单选/多选功能。
+- 检查仓库：运行 `git status --short --branch`，结果为 `## main...origin/main`；工作区包含 `README.md`、`install.sh`、`lib/common.sh`、`lib/system-tools.sh`、新增 `lib/remote-desktop.sh` 以及本记录文件修改。
+- 后续操作：将执行暂存、差异检查、提交和推送。

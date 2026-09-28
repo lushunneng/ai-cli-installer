@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ai-cli-installer - AI CLI 工具一键安装脚本 v3 (插件式架构)
-# 支持: Ubuntu 22.04 / 24.04
+# 支持: Debian 12 / Ubuntu 22.04 / 24.04 / 26.04
 # 新增工具: 只需在 lib/ 下添加 .sh 文件，无需修改本脚本
 
 set -eo pipefail
@@ -304,6 +304,22 @@ parse_args() {
             --uninstall|-u)  DO_FULL_UNINSTALL=true; shift ;;
             --yes|-y)        FORCE_YES=true; shift ;;
             --dry-run)       DRY_RUN=true; shift ;;
+            --remote-desktop)
+                if [[ $# -lt 2 || "$2" == --* ]]; then
+                    error "--remote-desktop 需要 install、status、repair、optimize 或 uninstall"
+                    exit 1
+                fi
+                REMOTE_DESKTOP_ACTION="$2"
+                shift 2
+                ;;
+            --tailscale-auth-key)
+                if [[ $# -lt 2 || "$2" == --* ]]; then
+                    error "--tailscale-auth-key 需要认证密钥"
+                    exit 1
+                fi
+                export TAILSCALE_AUTH_KEY="$2"
+                shift 2
+                ;;
             --node-version)
                 if [[ $# -lt 2 || "$2" == --* ]]; then
                     error "--node-version 需要一个版本号，例如: --node-version 22"
@@ -322,6 +338,8 @@ parse_args() {
                 echo "  --yes, -y       跳过确认"
                 echo "  --dry-run       仅显示操作"
                 echo "  --node-version  指定 Node.js 版本 (默认 22)"
+                echo "  --remote-desktop <action>  管理 XFCE/XRDP/Tailscale 远程桌面"
+                echo "  --tailscale-auth-key <key> 使用 Auth Key（不会写入日志或配置）"
                 echo ""
                 echo "新增工具: 在 lib/ 下创建 .sh 文件，调用 register_plugin 注册即可"
                 exit 0
@@ -334,10 +352,19 @@ parse_args() {
 # ==================== 主流程 ====================
 DO_FULL_INSTALL=false
 DO_FULL_UNINSTALL=false
+REMOTE_DESKTOP_ACTION=""
 
 parse_args "$@"
 init_log
 show_banner
+if [[ -n "$REMOTE_DESKTOP_ACTION" ]]; then
+    if ! check_ubuntu; then
+        exit 1
+    fi
+    remote_desktop_dispatch "$REMOTE_DESKTOP_ACTION"
+    unset TAILSCALE_AUTH_KEY
+    exit $?
+fi
 system_check
 
 if [[ "$DO_FULL_INSTALL" == "true" ]]; then

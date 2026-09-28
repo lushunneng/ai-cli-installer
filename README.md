@@ -13,10 +13,11 @@ AI CLI Installer 是一个插件式 AI CLI 工具安装器。入口脚本会自�
 - Kimi Code CLI (Moonshot AI)
 - Qoder CLI
 - 常用系统工具（ripgrep、fd、bat、jq、tree、htop、tmux、mosh 等）
+- 轻量级远程桌面（XFCE + XRDP + Xorgxrdp + Tailscale）
 
 ## 环境要求
 
-脚本主要面向 Ubuntu 22.04 / 24.04。其他 Linux 发行版可能可以运行，但会有提示确认。
+脚本主要支持 Debian 12、Ubuntu 22.04、24.04、26.04。其他 Linux 发行版可能可以运行，但会有提示确认；轻量级远程桌面模块仅支持上述系统。
 
 基础要求：
 
@@ -50,6 +51,8 @@ cd ai-cli-installer
 ```bash
 ./install.sh --all
 ```
+
+在交互式菜单中选择“常用系统工具”后，可以按编号安装单个或多个工具，例如输入 `1` 安装 ripgrep，输入 `1,4,8` 安装 ripgrep、jq 和 mosh，输入 `A` 安装全部常用工具。`--all` 仍会自动安装全部工具。
 
 自动确认并安装全部工具：
 
@@ -86,6 +89,35 @@ source ~/.bashrc
 ```bash
 source ~/.zshrc
 ```
+
+## 轻量级远程桌面
+
+远程桌面模块原生集成在安装器中，不创建独立脚本。它安装 XFCE、XRDP、Xorgxrdp、dbus-x11，并通过 Tailscale 提供推荐的私网访问路径。默认不会开放公网 TCP 3389，也不会关闭 UFW、修改 SSH 或删除用户数据。
+
+```bash
+# 预览安装动作
+./install.sh --remote-desktop install --dry-run --yes
+
+# 安装并进入 Tailscale 浏览器认证
+./install.sh --remote-desktop install
+
+# 使用 Auth Key（密钥不会输出、写入日志或配置）
+./install.sh --remote-desktop install --tailscale-auth-key "$TAILSCALE_AUTH_KEY"
+
+# 状态、修复、低资源优化、连接信息
+./install.sh --remote-desktop status
+./install.sh --remote-desktop repair
+./install.sh --remote-desktop optimize
+./install.sh --remote-desktop info
+
+# 卸载远程桌面软件（保留用户、Home、SSH）
+./install.sh --remote-desktop uninstall
+./install.sh --remote-desktop uninstall-tailscale
+```
+
+安装时会选择已有的普通用户；没有普通用户时才会询问是否创建，绝不使用 root 登录 XRDP。`~/.xsession` 覆盖前会备份到 `/var/backups/ai-cli-installer/remote-desktop/`。UFW 启用且 `tailscale0` 已出现时，仅允许该接口访问 3389；如果检测到公网 3389，会先提示用户选择是否删除明确的 3389 规则。
+
+认证完成后，客户端加入同一 Tailnet，在 Windows 使用 `mstsc`，macOS 使用 Microsoft Remote Desktop，Linux 使用 Remmina，连接 `tailscale IPv4:3389`。RDP 密码不会显示。
 
 ## 卸载工具
 
@@ -181,7 +213,7 @@ source ~/.zshrc
 - NVM：通过 GitHub releases 检查版本，并用官方安装脚本更新
 - Kimi Code CLI：优先使用 `uv tool upgrade kimi-cli --no-cache`
 - Qoder CLI：使用 npm 更新 `@qoder-ai/qodercli`
-- 常用系统工具：通过 APT `--only-upgrade` 更新已安装的软件包
+- 常用系统工具：通过 APT `--only-upgrade` 更新已安装的软件包；安装时可交互选择单个或多个工具
 
 ## 新增工具
 
