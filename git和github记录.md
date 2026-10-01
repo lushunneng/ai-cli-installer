@@ -138,3 +138,16 @@
 - 执行命令：`git push origin main`。
 - 执行结果：推送成功，远端 `main` 从 `e2fcabe` 更新到 `89d678e`。
 - 后续说明：本条记录随后单独提交并推送，以保持 Git/GitHub 操作记录与远端同步。
+
+## 2026-09-30：增加远程桌面交互式 Chrome 子菜单
+
+- 目的：让 Chrome 安装、默认浏览器设置、修复、测试和卸载功能在现有交互菜单中可见。
+- 检查：运行 `git status --short --branch`、`git diff --check`、`git diff --stat` 和 `git diff -- install.sh`；确认仅 `install.sh` 有 42 行新增、2 行修改，差异检查通过。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`；使用 `printf '9\\nQ\\nQ\\n' | ./install.sh --dry-run --yes` 验证远程桌面子菜单显示，结果通过。
+- 后续说明：本轮提交和推送结果将在后续记录中同步。
+
+## 2026-09-30：推送交互式 Chrome 子菜单修复
+
+- 目的：将菜单可见性修复同步到远端。
+- 执行命令：`git commit -m "feat: expose browser actions in menu"`、`git push origin main`。
+- 执行结果：提交成功，提交哈希为 `ad4fbff`；推送成功，远端 `main` 从 `772287f` 更新到 `ad4fbff`。
