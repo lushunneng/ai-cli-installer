@@ -306,7 +306,7 @@ parse_args() {
             --dry-run)       DRY_RUN=true; shift ;;
             --remote-desktop)
                 if [[ $# -lt 2 || "$2" == --* ]]; then
-                    error "--remote-desktop 需要 install、status、repair、optimize 或 uninstall"
+                    error "--remote-desktop 需要 install、status、repair、repair-browser、chrome-install、set-default-browser、test-chrome、optimize 或 uninstall"
                     exit 1
                 fi
                 REMOTE_DESKTOP_ACTION="$2"
@@ -338,7 +338,9 @@ parse_args() {
                 echo "  --yes, -y       跳过确认"
                 echo "  --dry-run       仅显示操作"
                 echo "  --node-version  指定 Node.js 版本 (默认 22)"
-                echo "  --remote-desktop <action>  管理 XFCE/XRDP/Tailscale 远程桌面"
+                echo "  --remote-desktop <action>  管理 XFCE/XRDP/Tailscale/Chrome"
+                echo "                    action: install, status, repair, chrome-install, set-default-browser"
+                echo "                            repair-browser, test-chrome, optimize, uninstall-chrome, uninstall"
                 echo "  --tailscale-auth-key <key> 使用 Auth Key（不会写入日志或配置）"
                 echo ""
                 echo "新增工具: 在 lib/ 下创建 .sh 文件，调用 register_plugin 注册即可"

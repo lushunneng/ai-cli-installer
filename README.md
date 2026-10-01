@@ -13,7 +13,7 @@ AI CLI Installer 是一个插件式 AI CLI 工具安装器。入口脚本会自�
 - Kimi Code CLI (Moonshot AI)
 - Qoder CLI
 - 常用系统工具（ripgrep、fd、bat、jq、tree、htop、tmux、mosh 等）
-- 轻量级远程桌面（XFCE + XRDP + Xorgxrdp + Tailscale）
+- 轻量级远程桌面（XFCE + XRDP + Xorgxrdp + Tailscale + Google Chrome）
 
 ## 环境要求
 
@@ -110,14 +110,24 @@ source ~/.zshrc
 ./install.sh --remote-desktop optimize
 ./install.sh --remote-desktop info
 
+# Chrome 与 XFCE 默认浏览器
+./install.sh --remote-desktop chrome-install
+./install.sh --remote-desktop set-default-browser
+./install.sh --remote-desktop repair-browser
+./install.sh --remote-desktop test-chrome
+./install.sh --remote-desktop status
+
 # 卸载远程桌面软件（保留用户、Home、SSH）
 ./install.sh --remote-desktop uninstall
+./install.sh --remote-desktop uninstall-chrome
 ./install.sh --remote-desktop uninstall-tailscale
 ```
 
 安装时会选择已有的普通用户；没有普通用户时才会询问是否创建，绝不使用 root 登录 XRDP。`~/.xsession` 覆盖前会备份到 `/var/backups/ai-cli-installer/remote-desktop/`。UFW 启用且 `tailscale0` 已出现时，仅允许该接口访问 3389；如果检测到公网 3389，会先提示用户选择是否删除明确的 3389 规则。
 
 认证完成后，客户端加入同一 Tailnet，在 Windows 使用 `mstsc`，macOS 使用 Microsoft Remote Desktop，Linux 使用 Remmina，连接 `tailscale IPv4:3389`。RDP 密码不会显示。
+
+`chrome-install` 只在 amd64/x86_64 上使用 Google 官方 Stable `.deb`，已安装时会跳过下载。安装后会为检测到的普通 XRDP 用户设置 `google-chrome.desktop`，并配置 HTTP、HTTPS、HTML MIME handler。`repair-browser` 会检查 Chrome 可执行文件、desktop 文件、`xdg-settings`、`xdg-mime`、用户 `mimeapps.list` 和 XFCE 配置；修改前会备份相关文件。Chrome 测试使用当前 XRDP 会话的实际 `DISPLAY`，不会固定为 `:0`，也不会默认使用 `--no-sandbox`。
 
 ## 卸载工具
 
@@ -403,4 +413,3 @@ bash -c 'source lib/common.sh; load_plugins lib; printf "%s\n" "${PLUGIN_LIST[@]
 ```
 
 安装器结束时会打印日志路径。
-

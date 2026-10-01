@@ -116,3 +116,11 @@
 - 目的：将远程桌面模块及常用系统工具单选/多选功能同步到远端仓库。
 - 执行命令：`git push origin main`。
 - 执行结果：推送成功，远端 `main` 从 `54ff0a8` 更新到 `a2d2cd6`。
+
+## 2026-09-30：集成 Chrome/XFCE 默认浏览器管理
+
+- 目的：在现有 XFCE/XRDP/Tailscale 模块中加入 Google Chrome 安装、默认浏览器设置与修复、启动检测、状态和卸载动作。
+- 前置检查：阅读 `git和github记录.md`，确认此前远程桌面模块和仓库工作流上下文。
+- Git 检查：运行 `git status --short --branch`、`git diff --check`、`git diff --stat` 和针对 `README.md`、`install.sh`、`lib/remote-desktop.sh` 的 `git diff`；结果为当前分支 `main` 跟踪 `origin/main`，仅上述三个文件被修改，diff 检查通过。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、安装器帮助、Chrome 安装/默认浏览器/修复/测试/status 的 dry-run，以及最终 `git diff --check`；均通过。环境未安装 `shellcheck`，未执行实际 apt、Chrome 下载、服务修改或部署。
+- 后续说明：本轮未执行 commit、push、pull、merge 或其他远端 GitHub 操作；功能通过现有 `--remote-desktop <action>` 接入，默认配置只针对选定普通桌面用户并在修改前备份。
