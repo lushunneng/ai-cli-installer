@@ -124,3 +124,17 @@
 - Git 检查：运行 `git status --short --branch`、`git diff --check`、`git diff --stat` 和针对 `README.md`、`install.sh`、`lib/remote-desktop.sh` 的 `git diff`；结果为当前分支 `main` 跟踪 `origin/main`，仅上述三个文件被修改，diff 检查通过。
 - 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、安装器帮助、Chrome 安装/默认浏览器/修复/测试/status 的 dry-run，以及最终 `git diff --check`；均通过。环境未安装 `shellcheck`，未执行实际 apt、Chrome 下载、服务修改或部署。
 - 后续说明：本轮未执行 commit、push、pull、merge 或其他远端 GitHub 操作；功能通过现有 `--remote-desktop <action>` 接入，默认配置只针对选定普通桌面用户并在修改前备份。
+
+## 2026-09-30：提交 Chrome 浏览器管理集成
+
+- 目的：保存已验证的 Chrome/XFCE 默认浏览器管理改动，准备同步到远端。
+- 执行命令：`git add README.md install.sh lib/remote-desktop.sh 'git和github记录.md'`、`git diff --cached --check`、`git diff --cached --stat`、`git commit -m "feat: add Chrome browser management"`。
+- 执行结果：暂存差异检查通过；提交成功，提交哈希为 `89d678e`，包含 4 个文件、347 行新增/修改。
+- 后续说明：随后将推送 `main` 到 `origin`，推送结果会追加记录。
+
+## 2026-09-30：推送 Chrome 浏览器管理集成
+
+- 目的：将提交 `89d678e` 同步到远端仓库。
+- 执行命令：`git push origin main`。
+- 执行结果：推送成功，远端 `main` 从 `e2fcabe` 更新到 `89d678e`。
+- 后续说明：本条记录随后单独提交并推送，以保持 Git/GitHub 操作记录与远端同步。
