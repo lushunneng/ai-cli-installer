@@ -58,6 +58,9 @@ show_menu() {
             echo -e "  $idx) $name"
         fi
         echo -e "     ${CYAN}${desc}${NC}"
+        if [[ "$id" == "remote-desktop" ]]; then
+            echo -e "     ${CYAN}选择后可管理 XFCE/XRDP、Google Chrome、默认浏览器和诊断${NC}"
+        fi
         ((idx++))
     done
 
@@ -66,6 +69,38 @@ show_menu() {
     echo -e "  ${BOLD}U) 全部卸载${NC}"
     echo -e "  ${BOLD}Q) 退出${NC}"
     echo ""
+}
+
+remote_desktop_interactive_menu() {
+    echo ""
+    echo -e "${BOLD}XFCE/XRDP/Chrome:${NC}"
+    echo "  1) 安装 XFCE + XRDP + Tailscale"
+    echo "  2) Install Google Chrome"
+    echo "  3) Set Default Browser"
+    echo "  4) Repair Default Browser"
+    echo "  5) Test Chrome"
+    echo "  6) Desktop Status"
+    echo "  7) Optimize Desktop"
+    echo "  8) Uninstall Chrome"
+    echo "  9) Uninstall XFCE/XRDP"
+    echo "  Q) 返回"
+    echo ""
+    local action
+    echo -n -e "${BOLD}请选择操作: ${NC}"
+    read -r action
+    case "$action" in
+        1) remote_desktop_dispatch install ;;
+        2) remote_desktop_dispatch chrome-install ;;
+        3) remote_desktop_dispatch set-default-browser ;;
+        4) remote_desktop_dispatch repair-browser ;;
+        5) remote_desktop_dispatch test-chrome ;;
+        6) remote_desktop_dispatch status ;;
+        7) remote_desktop_dispatch optimize ;;
+        8) remote_desktop_dispatch uninstall-chrome ;;
+        9) remote_desktop_dispatch uninstall ;;
+        [Qq]) info "已返回主菜单" ;;
+        *) warn "无效选择: $action"; return 1 ;;
+    esac
 }
 
 # ==================== 通过编号查找插件 ====================
@@ -120,9 +155,14 @@ process_choice() {
             read -ra selections <<< "$choice"
             for sel in "${selections[@]}"; do
                 sel=$(echo "$sel" | tr -d ' ')
-                local plugin
+                local plugin plugin_id
                 if plugin=$(find_plugin_by_index "$sel"); then
-                    install_plugin "$plugin" || true
+                    plugin_id=$(get_plugin_field "$plugin" 1)
+                    if [[ "$plugin_id" == "remote-desktop" ]]; then
+                        remote_desktop_interactive_menu || true
+                    else
+                        install_plugin "$plugin" || true
+                    fi
                 else
                     warn "无效选择: $sel"
                 fi
