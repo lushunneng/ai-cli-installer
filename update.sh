@@ -153,6 +153,7 @@ latest_version_for() {
         herdr)       github_latest_release "herdrdev" "herdr" ;;
         opencode)    npm_latest_version "opencode-ai" ;;
         kimi)        pypi_latest_version "kimi-cli" ;;
+        pi)          npm_latest_version "$PI_NPM_PACKAGE" ;;
         qoder)       npm_latest_version "@qoder-ai/qodercli" ;;
         *)           return 1 ;;
     esac

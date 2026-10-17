@@ -151,3 +151,39 @@
 - 目的：将菜单可见性修复同步到远端。
 - 执行命令：`git commit -m "feat: expose browser actions in menu"`、`git push origin main`。
 - 执行结果：提交成功，提交哈希为 `ad4fbff`；推送成功，远端 `main` 从 `772287f` 更新到 `ad4fbff`。
+
+## 2026-09-30：集成 RDP 体验优化模块
+
+- 目的：在现有 XFCE/XRDP/Tailscale 模块中加入剪贴板修复、密码重置、Windows RDP 文件、连接信息、复制辅助命令、XRDP 测试和性能优化菜单。
+- 检查：运行 `git status --short --branch`、`git diff --check`、`git diff --stat`；当前分支为 `main`，修改集中在 `README.md`、`install.sh`、`lib/remote-desktop.sh`，差异检查通过。
+- 验证：运行 `bash -n install.sh uninstall.sh update.sh lib/*.sh`、安装器帮助、`repair-clipboard`/`reset-password`/`export-rdp`/`test-xrdp`/`copy-commands` dry-run、统一 `repair` dry-run、交互式 RDP 文件导出 dry-run，以及菜单 dry-run；均通过。环境未安装 `shellcheck`，未实际安装依赖、修改 `/etc/xrdp`、重启 XRDP 或生成真实连接文件。
+- 安全说明：密码仅通过交互式 `passwd` 处理；RDP 文件不含密码，已有文件会备份；没有修改 SSH、开放公网 3389、关闭防火墙或删除用户。
+- 后续说明：本轮未执行 commit 或 push。
+
+## 2026-10-17：检查 Pi 集成推送范围
+
+- 目的：按用户要求提交并推送 Pi Coding Agent 集成。
+- 执行命令：`git status --short --branch`、`git remote -v`、`git diff --check`、`git diff --stat`、`git diff -- README.md update.sh`。
+- 结果：当前为 `main`，跟踪 `origin/main`；远端为 `git@github.com:lushunneng/ai-cli-installer.git`；差异检查通过。工作区还包含此前 RDP 改动（`install.sh`、`lib/remote-desktop.sh` 和 README 部分内容）。
+- 范围：本次提交 Pi 插件、更新检查、README 中 Pi 说明及操作记录；既有 RDP 代码改动保留在工作区。
+- 验证：上一轮已通过 16 个 Shell 文件的语法检查，以及 Pi 安装、卸载、更新分发、dry-run、错误处理和 Node.js 版本边界模拟验证，未实际安装软件。
+
+## 2026-10-17：暂存检查与空白修复
+
+- 目的：仅暂存 Pi 集成。
+- 执行命令：`git diff -- README.md`、`git apply --cached --whitespace=error -`（仅 Pi 区块）、`git add lib/pi.sh update.sh git和github记录.md`、`git diff --cached --check`。
+- 结果：差异生成、局部暂存和文件暂存成功；差异检查因操作记录末尾多余空行返回 2，已删除多余空行，尚未创建提交。
+
+- 日期：2026-10-17；目的：提交并推送 Pi 集成；执行：`git add git和github记录.md`；结果：成功。
+
+- 日期：2026-10-17；目的：提交并推送 Pi 集成；执行：`git diff --cached --check`；结果：成功。
+
+- 日期：2026-10-17；目的：提交并推送 Pi 集成；执行：`git diff --cached --stat`；结果：成功。
+
+```text
+ README.md                                          | 14 ++++
+ "git\345\222\214github\350\256\260\345\275\225.md" | 22 ++++++
+ lib/pi.sh                                          | 91 ++++++++++++++++++++++
+ update.sh                                          |  1 +
+ 4 files changed, 128 insertions(+)
+```

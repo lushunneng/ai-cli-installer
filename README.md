@@ -11,6 +11,7 @@ AI CLI Installer 是一个插件式 AI CLI 工具安装器。入口脚本会自�
 - Herdr
 - OpenCode CLI
 - Kimi Code CLI (Moonshot AI)
+- Pi Coding Agent
 - Qoder CLI
 - 常用系统工具（ripgrep、fd、bat、jq、tree、htop、tmux、mosh 等）
 - 轻量级远程桌面（XFCE + XRDP + Xorgxrdp + Tailscale + Google Chrome）
@@ -223,7 +224,20 @@ source ~/.zshrc
 - NVM：通过 GitHub releases 检查版本，并用官方安装脚本更新
 - Kimi Code CLI：优先使用 `uv tool upgrade kimi-cli --no-cache`
 - Qoder CLI：使用 npm 更新 `@qoder-ai/qodercli`
+- Pi Coding Agent：使用 npm 更新 `@earendil-works/pi-coding-agent`，复用安装插件的版本检查
 - 常用系统工具：通过 APT `--only-upgrade` 更新已安装的软件包；安装时可交互选择单个或多个工具
+
+## Pi Coding Agent
+
+运行 `./install.sh`，在菜单中选择 **Pi Coding Agent**。需要先安装 Node.js **22.19.0 或更高版本** 和 npm；可通过菜单中的 Node.js (NVM) 安装或更新 Node.js 22。
+
+插件使用 [pi 官网](https://pi.dev) 当前提供的 npm 安装方式：
+
+```bash
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent@latest
+```
+
+安装后运行 `pi`。可通过 `./update.sh` 检查和更新，通过 `./uninstall.sh` 选择卸载。卸载默认保留 `~/.pi` 中的配置、认证和会话；选择删除时会先备份到 `~/.pi.bak.<时间戳>`。`--yes` 会自动确认删除并先备份。
 
 ## 新增工具
 
